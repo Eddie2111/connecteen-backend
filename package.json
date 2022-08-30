@@ -1,0 +1,39 @@
+{
+  "name": "connecteen",
+  "version": "0.0.1",
+  "description": "connecteen frontend",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Eddie2111/connecteen-backend.git"
+  },
+  "keywords": [
+    "!frontend"
+  ],
+  "author": "Eddie2111",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Eddie2111/connecteen-backend/issues"
+  },
+  "homepage": "https://github.com/Eddie2111/connecteen-backend#readme",
+  "dependencies": {
+    "cookie-parser": "^1.4.6",
+    "cookieparser": "^0.1.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.1",
+    "express": "^4.18.1",
+    "express-session": "^1.17.3",
+    "fs": "^0.0.1-security",
+    "joi": "^17.6.0",
+    "mongoose": "^6.5.3",
+    "morgan": "^1.10.0",
+    "nodejs-nodemailer-outlook": "^1.2.4",
+    "nodemailer": "^6.7.8",
+    "nodemon": "^2.0.19",
+    "path": "^0.12.7"
+  }
+}
