@@ -4,7 +4,15 @@ const {mailerAlpha,mailerOmega} = require('../middleware/nodemailer');
 
 const {User} = require('../model/auth');
 const {validateSignUp,schema} = require('../controllers/signupValidator');
-const username = require('../modules/usernameGenerator');
+
+const username = ()=>{
+    let r = (Math.random() + 5).toString(36).substring(2);
+    var now = Date.now().toString()
+    var username = r+now;
+    return username;
+}
+
+            
 
 const { signupFail, mailExists, netError, improperInput } = require('../controllers/messages');
 
