@@ -50,11 +50,15 @@ app.use(express.json())
 const welcome = require('./route/index');
 const signup = require('./route/signup');
 const verify = require('./route/verify');
+const course = require('./route/course');
+const test = require('./route/test');
 
 // routes 
 app.use('/',welcome);
 app.use('/signup',signup);
 app.use('/verify',verify);
+app.use('/course',course);
+app.use('/test',test);
 
 // error handling
 const {errorRoute} = require ("./controllers/messages");

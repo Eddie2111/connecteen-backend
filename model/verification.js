@@ -1,23 +1,23 @@
 const mongoose = require('mongoose');
 
 const verificationIn = new mongoose.Schema({
-    username: String,             // not user defined, backend defined for better indexing
+    username: String,  // not user defined, backend defined for better indexing
     code: {
         type:      String,
         required:  true,
-        length:    [6, 6],
+        length:    [4, 4],
         trim:      true,
         validate: {
             validator: function(v) {
-                return /^[0-9]{6}$/.test(v);
+                return /^[0-9]{4}$/.test(v);
             }
         }
   },
-  email: {
+  email: {                         // user defined
     type:      String,
     required:  true,
     lowercase: true,
-    length:    [3, 35],
+    length:    [8, 35],
     unique:    true,
     trim:      true,
     validate: {
@@ -26,29 +26,27 @@ const verificationIn = new mongoose.Schema({
     }
 }
   },
-   { collection: 'user' }
+   { collection: 'verificationDB' }
 );
 
-const Userone = new mongoose.Schema({            //look up schema, will be used for logging in
-    name: {
+const verificationOut = new mongoose.Schema({            //look up schema, will be used for logging in
+    code: {
         type:      String,
     },
     email: {
         type:      String
     },
-    password: {
-        type:      String,
-    },
     isConfirmed: {
         type:      Boolean,
-        default:   false
+        default:   true
     }
   },
    { collection: 'user' }
 );
-const userOne = mongoose.model('Userone', Userone);
-const User    = mongoose.model('User', userSchema);
-module.exports = {User,userOne};
+
+const verificationInput = mongoose.model('verificationIn', verificationIn);
+const verificationOutput = mongoose.model('verificationOut', verificationOut);
+module.exports = {verificationInput,verificationOutput};
 
 /////////////////
 /** for password validation

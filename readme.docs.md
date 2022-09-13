@@ -14,3 +14,4 @@
 - welcome
 - signup
 - verify
+- course:request

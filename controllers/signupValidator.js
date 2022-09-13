@@ -54,7 +54,8 @@ birth_year: Joi.number()
 email: Joi.string()
     .email(
         { 
-            minDomainSegments: 4, 
+            minDomainSegments: 2, 
+            maxDomainSegments: 5,
             //tlds: { allow: ['com', 'net','ac.bd'] } 
         }
     ),
@@ -68,8 +69,8 @@ email: Joi.string()
 //schema.validate({});
 // -> { value: {}, error: '"username" is required' }
 
-// Also -
-const value = schema.validate({ name: 'ontora biswas', birth_year: 1994, password:'AA!@12bbb' });
+// Test validation Schema from here -
+const value = schema.validate({ name: 'ontora biswas', email:"tarek42223@gmail.com", password:'AA!@12bbb' });
 //console.log(value)
 
             
