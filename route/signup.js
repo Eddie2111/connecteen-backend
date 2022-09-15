@@ -43,8 +43,8 @@ router
                 });
                 verification.save();
                 console.log("stage-3 complete");
-                try{mailerAlpha(code,validated.email),console.log("ok"),console.log("stage-4 complete")}
-                catch(err){console.log(err),console.log("stage-4 complexity");}
+                //try{mailerAlpha(code,validated.email),console.log("ok"),console.log("stage-4 complete")}
+                //catch(err){console.log(err),console.log("stage-4 complexity");}
                 res.json({result,value});
             }).catch(err=>{
                 if (err.code===11000){

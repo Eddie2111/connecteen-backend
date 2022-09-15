@@ -86,10 +86,15 @@ const verificationSuccess = {
     message: "verification success",
     route: "/success"
 }
+const verificationFail = {
+    status: 404,
+    message: "verification failed",
+    route: "/signup"
+}
 module.exports = {
         success, fail, wrongPassword, noinput, errorRoute, 
         noUser, noEmail, passwordMatch, improperInput,
         mailExists, signupSuccess, signupFail, loggedin,
         netError, loginwrongPassword, loginpasswordMatch, 
-        loginnoUser, wrongCode, verificationSuccess
+        loginnoUser, wrongCode, verificationSuccess, verificationFail
     };

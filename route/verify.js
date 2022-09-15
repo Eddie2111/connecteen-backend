@@ -1,10 +1,10 @@
 const express = require('express');
 const router = express.Router();
 
-const {verificationOut} = require('../model/verification');
-const {verification} = require("../controllers/verificationValidator");
-const { verificationSuccess, wrongCode } = require("../controllers/messages");
-
+const {verificationOutput} = require('../model/verification');
+const { verification } = require("../controllers/verificationValidator");
+const { verificationSuccess,verificationFail, wrongCode } = require("../controllers/messages");
+const {User} = require('../model/auth');
 router
     .route('/')
     .get((req,res)=>{
@@ -21,7 +21,18 @@ router
             res.send(message);
         }
         else {
-            res.send(verificationSuccess);
+            verificationOutput.findOneAndDelete({email: email,code:code}).then(result=>{
+                console.log(result.email);
+                const filter = {email: result.email};
+                const update = {isConfirmed: true};
+                console.log(filter,update);
+                User.findOneAndUpdate(filter,update).then(result=>{
+                    console.log(result);
+                    res.send(verificationSuccess);
+                }).catch(err=>{
+                    console.log(verificationFail);
+                });
+            });
         }
     });
         

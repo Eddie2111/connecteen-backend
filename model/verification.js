@@ -24,7 +24,7 @@ const verificationIn = new mongoose.Schema({
         validator: function(v) {
             return /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/.test(v);}
     }
-}
+},
   },
    { collection: 'verificationDB' }
 );
@@ -41,7 +41,7 @@ const verificationOut = new mongoose.Schema({            //look up schema, will 
         default:   true
     }
   },
-   { collection: 'user' }
+   { collection: 'verificationDB' }
 );
 
 const verificationInput = mongoose.model('verificationIn', verificationIn);

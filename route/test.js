@@ -15,8 +15,8 @@ router
     })
     .post((req,res)=>{
         const sum = {...archivedPost,post:req.body};
-        console.log(sum);
-        res.json(sum);
+        console.log(sum,req);
+        res.json(req);
     });
         
 module.exports = router;
