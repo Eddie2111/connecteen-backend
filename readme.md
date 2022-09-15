@@ -15,8 +15,10 @@ This future platform will bring in all the advanced skilled teens into a single 
 - cors applied
 - backlogger installed
 - nodemailer implemented
+- Error handling implemented
 - every single input throughly validated using JOI
 - Two factor authentication signup completed
+
 
 # Works left
 - figure out and fix the signup authentication from sign up.
