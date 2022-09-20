@@ -22,17 +22,26 @@ router
         }
         else {
             verificationOutput.findOneAndDelete({email: email,code:code}).then(result=>{
-                console.log(result.email);
-                const filter = {email: result.email};
-                const update = {isConfirmed: true};
-                console.log(filter,update);
-                User.findOneAndUpdate(filter,update).then(result=>{
+                if (result) {
                     console.log(result);
-                    res.send(verificationSuccess);
-                }).catch(err=>{
-                    console.log(verificationFail);
-                });
-            });
+                    const filter = {email: result.email};
+                    const update = {isConfirmed: true};
+                    console.log(filter,update);
+                    User.findOneAndUpdate(filter,update).then(result=>{
+                        console.log(result);
+                        res.send(verificationSuccess);
+                    }).catch(err=>{
+                        console.log(verificationFail);
+                    });
+                }
+                else {
+                    res.send(message);
+                }
+            }).catch(err=>{
+                console.log(err);
+            }
+            
+            );
         }
     });
         

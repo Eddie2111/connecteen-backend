@@ -7,7 +7,7 @@ const atlas         = require('./model/atlas');
 const cookieparser  = require("cookie-parser");
 const bodyParser    = require('body-parser');
 const cors          = require('cors');
-
+const dayjs         = require('dayjs');
 
 // backloggers
 const morgan     = require('morgan');
@@ -26,7 +26,12 @@ const corsConfig = {
     origin: '*',
     methods: 'GET,POST', //GET,HEAD,PUT,PATCH,POST,DELETE
     preflightContinue: false,
-    optionsSuccessStatus: 204
+    optionsSuccessStatus: 204,
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    exposedHeaders: ['Content-Type', 'Authorization'],
+    maxAge: 600,
+    preflightContinue: false,
+    credentials: true
 }
 app.use(cors(corsConfig));
 
@@ -49,6 +54,7 @@ app.use(express.json())
 // route imports
 const welcome = require('./route/index');
 const signup = require('./route/signup');
+const login = require('./route/login');
 const verify = require('./route/verify');
 const course = require('./route/course');
 const test = require('./route/test');
@@ -56,11 +62,37 @@ const test = require('./route/test');
 // routes 
 app.use('/',welcome);
 app.use('/signup',signup);
+app.use('/login',login);
 app.use('/verify',verify);
 app.use('/course',course);
 app.use('/test',test);
 
+// cookie test
+app.use("/cookies", (req, res) => {
+  const dataToSecure = {
+    dataToSecure: "e9032hre3209hr93820hrf9302hf940h904",
+  };
+
+  res.cookie("secureCookie", JSON.stringify(dataToSecure), {
+    secure: "e9032hre3209hr93820hrf9302hf940h904",
+    httpOnly: true,
+    sameSite: false,
+    expires: dayjs().add(30, "days").toDate(),
+  });
+
+  res.json({
+    message: "Cookie set",
+    status: "status is fine",
+    code: "200",
+    messagio: "no fail"
+  });
+});
+
+
+
+
 // error handling
+
 const {errorRoute} = require ("./controllers/messages");
 app.use(function(req, res, next) {
     var err = new Error('Not Found');

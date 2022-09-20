@@ -1,4 +1,4 @@
-////////// sign up validator //////////
+////////// Login validator //////////
 const bcrypt = require('bcrypt');
 
 const validateEmail = (email) => {
@@ -11,29 +11,27 @@ const validateEmail = (email) => {
     catch(err){
         return "not a valid email";
     }
-  };
-
+    };
 const validatePassword = (password) => {
   try{
     const saltRounds = 10;
     const salt = bcrypt.genSaltSync(saltRounds);
     const hash = bcrypt.hashSync(password, salt);
     console.log(hash);
-  return String(hash).substring(0,64);
+
+    return String(hash).substring(0,64);
   }
   catch(err){
     return "not a valid password";
   }
 }
 
-function validateSignUp(data) {
+function validateLogin(data) {
     const email     = validateEmail(data.email);
     const password  = validatePassword(data.password);
-    const name      = String(data.name).match(/^[a-z A-Z]+$/);
         const validated = {
             email:email,
-            password:String(password),
-            name:String(name)
+            password:String(password)
         }
     return validated;
 }
@@ -41,10 +39,6 @@ function validateSignUp(data) {
 const Joi = require('joi');
 
 const schema = Joi.object({
-name: Joi.string()
-        .min(3)
-        .max(30)
-        .pattern(new RegExp('^[a-z A-Z]{3,18}$')),
 
 password: Joi.string()
     .pattern(new RegExp('^.{0,65}$')),
