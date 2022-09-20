@@ -18,11 +18,15 @@ This future platform will bring in all the advanced skilled teens into a single 
 - Error handling implemented
 - every single input throughly validated using JOI
 - Two factor authentication signup completed
-
+- JWT and secure cookies implemented on login.
 
 # Works left
-- figure out and fix the signup authentication from sign up.
 - Hotmail is being blocked for sending authorization mails.
+- Apply SendGrid for mass emailing.
+- Forgot password.
+- Contact Us.
+- Dashboard support.
+- Heroku postgres for better data manipulation.
 
 # Routes implemented
 - welcome
@@ -31,3 +35,4 @@ This future platform will bring in all the advanced skilled teens into a single 
 - signup
 - verify
 - 404
+- cookie [test]
