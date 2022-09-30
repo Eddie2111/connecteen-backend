@@ -2,19 +2,19 @@
     {
       name: 'Python',
       description: 'Python is an interpreted, high-level, general-purpose programming language. Created by Guido van Rossum and first released in 1991, Python has a design philosophy that emphasizes code readability, notably using significant whitespace.',
-      image: '/python.png',
+      image: 'https://res.cloudinary.com/homeeventtest/image/upload/v1663934931/Courses/python_knp3l4.png',
       link: 'https://www.youtube.com/watch?v=rfscVS0vtbw'
     },
     {
       name: 'Cpp',
       description: 'C++ is a general-purpose programming language created by Bjarne Stroustrup as an extension of the C programming language, or "C with Classes". The language has expanded significantly over time, and modern C++ now has object-oriented, generic, and functional features in addition to facilities for low-level memory manipulation.',
-      image: '/cpp.png',
+      image: 'https://res.cloudinary.com/homeeventtest/image/upload/v1663934931/Courses/cpp_srtkdn.png',
       link: 'https://www.youtube.com/watch?v=vLnPwxZdW4Y'
     },
     {
       name: 'Java',
       description: 'Java is a general-purpose programming language that is class-based, object-oriented, and designed to have as few implementation dependencies as possible. It is intended to let application developers "write once, run anywhere" (WORA), meaning that compiled Java code can run on all platforms that support Java without the need for recompilation.',
-      image: '/java.png',
+      image: 'https://res.cloudinary.com/homeeventtest/image/upload/v1663934931/Courses/java_vaqoyu.jpg',
       link: 'https://www.youtube.com/watch?v=eIrMbAQSU34'
     },
     {

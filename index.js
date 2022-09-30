@@ -8,7 +8,7 @@ const cookieparser  = require("cookie-parser");
 const bodyParser    = require('body-parser');
 const cors          = require('cors');
 const dayjs         = require('dayjs');
-
+const jwt          = require('jsonwebtoken');
 // backloggers
 const morgan     = require('morgan');
 const fs         = require('fs');
@@ -72,9 +72,25 @@ app.use("/cookies", (req, res) => {
   const dataToSecure = {
     dataToSecure: "e9032hre3209hr93820hrf9302hf940h904",
   };
+  const token = jwt.sign(
+    {
+      exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 30, // 30 days
+      username: "result.username",
+      email:"result.email"
+    },
+    process.env.secret
+  );
+
+  const serialised = serialize("OursiteJWT", token, {
+    httpOnly: true,
+    secure: true,
+    sameSite: "strict",
+    maxAge: 60 * 60 * 24 * 30,
+    path: "/",
+  });
 
   res.cookie("secureCookie", JSON.stringify(dataToSecure), {
-    secure: "e9032hre3209hr93820hrf9302hf940h904",
+    secure: true,
     httpOnly: true,
     sameSite: false,
     expires: dayjs().add(30, "days").toDate(),

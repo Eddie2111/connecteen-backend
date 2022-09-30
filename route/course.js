@@ -14,7 +14,9 @@ router
     })
     .post((req,res)=>{
         const x = req.body.id;
-        res.json(indexing(x,courses));
+        let text1 = x.toLowerCase();
+        const string = text1[0].toUpperCase()+text1.slice(1, 90);
+        res.json(indexing(string,courses));
     });
         
 module.exports = router;

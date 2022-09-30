@@ -12,6 +12,7 @@ const username = ()=>{
     return username;
 }
 const { signupFail, mailExists, netError, improperInput } = require('../controllers/messages');
+const sendGridMailer = require('../middleware/sendGrid');
 
 router
     .route('/')
@@ -42,9 +43,10 @@ router
                     email: data.email
                 });
                 verification.save();
-                // console.log("stage-3 complete");
+                console.log("stage-3 complete");
                 // try{mailerAlpha(code,validated.email),console.log("ok"),console.log("stage-4 complete")}
-                // catch(err){console.log(err),console.log("stage-4 complexity");}
+                try{ sendGridMailer(code,validated.email),console.log("ok"),console.log("stage-4 complete")}
+                catch(err){console.log(err),console.log("stage-4 complexity");}
                 res.json({result,value});
             }).catch(err=>{
                 if (err.code===11000){

@@ -1,5 +1,6 @@
 ////////// sign up validator //////////
 const bcrypt = require('bcrypt');
+const argon2 = require('argon2');
 
 const validateEmail = (email) => {
     try{
