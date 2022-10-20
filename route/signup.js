@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const {mailerAlpha} = require('../middleware/nodemailer');
+const sendGridMailer = require('../middleware/sendGrid');
 const {verificationInput} = require('../model/verification');
 const {User} = require('../model/auth');
 const {validateSignUp,schema} = require('../controllers/signupValidator');
@@ -12,7 +12,6 @@ const username = ()=>{
     return username;
 }
 const { signupFail, mailExists, netError, improperInput } = require('../controllers/messages');
-const sendGridMailer = require('../middleware/sendGrid');
 
 router
     .route('/')
@@ -32,11 +31,11 @@ router
                 username:username(), 
                 isConfirmed:false,
                 ...validated};
-            // console.log("stage-1 complete");
+            console.log("stage-1 complete");
             const user = new User(data);
             user.save().then(result=>{
                 // success
-                // console.log("stage-2 complete");
+                console.log("stage-2 complete");
                 const code = Math.floor(Math.random() * (9999 - 1000) + 1000);
                 const verification = new verificationInput({
                     code: code,
@@ -44,7 +43,7 @@ router
                 });
                 verification.save();
                 console.log("stage-3 complete");
-                // try{mailerAlpha(code,validated.email),console.log("ok"),console.log("stage-4 complete")}
+                
                 try{ sendGridMailer(code,validated.email),console.log("ok"),console.log("stage-4 complete")}
                 catch(err){console.log(err),console.log("stage-4 complexity");}
                 res.json({result,value});

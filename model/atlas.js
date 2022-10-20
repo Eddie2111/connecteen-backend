@@ -1,9 +1,9 @@
 const mongoose = require('mongoose');
 const url = `mongodb+srv://${process.env.DBUSERNAME}:${process.env.DBPASSWORD}@${process.env.DBCLUSTER}`;
-
+//const url = 'mongodb://localhost:27017/test';
 const connection = mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true })
-   .then(() => console.log('DB:200'))
-   .catch(err => console.error('DB:404', err));
+   .then(() => console.log('NOSQL DB:200'))
+   .catch(err => console.error('NOSQL DB:500', err));
 
  //const connection = "dummy"; // only use it when server under development
 

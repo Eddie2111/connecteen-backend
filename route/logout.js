@@ -12,11 +12,12 @@ const archivedPost = {...data,test:true,Status:"Post"};
 router
     .route('/')
     .get((req,res)=>{
+        req.session.destroy();
         res.json({...archivedGet,get:req.body});
     })
     .post((req,res)=>{
         const sum = {...archivedPost,post:req.body};
-        
+        req.session.destroy();
         res.json(req.method);
     });
         

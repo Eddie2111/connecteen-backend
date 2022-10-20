@@ -8,7 +8,7 @@ const express = require('express');
 const router = express.Router();
 const { userOne } = require('../model/auth');
 const {validateSignUp,schema} = require('../controllers/signupValidator');
-
+const session = require('express-session');
 router
     .route('/')
     .get((req,res)=>{
@@ -51,6 +51,7 @@ router
           res.setHeader("Set-Cookie", serialised);
           console.log("Stage-4 completed")
           res.status(200).json({ message: "Success!",result:result,status:"success",serialised:serialisedd,token:token });
+          session.token = token;
           console.log("Stage-5 completed")
         } 
         else {

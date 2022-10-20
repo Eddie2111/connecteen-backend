@@ -3,12 +3,16 @@ require('dotenv').config();
 const express       = require('express');
 const app           = express();
 const session       = require("express-session");
+
+const postgres      = require('./model/postgres');
 const atlas         = require('./model/atlas');
+const redis         = require('./model/redis');
+
 const cookieparser  = require("cookie-parser");
 const bodyParser    = require('body-parser');
 const cors          = require('cors');
 const dayjs         = require('dayjs');
-const jwt          = require('jsonwebtoken');
+const jwt           = require('jsonwebtoken');
 // backloggers
 const morgan     = require('morgan');
 const fs         = require('fs');
@@ -21,6 +25,13 @@ require('./test/test');
 app.use(morgan('common', {
   stream: fs.createWriteStream(path.join(__dirname, 'access.log'), { flags: 'a' })
 }))
+
+app.use(session({
+  secret: process.env.SECRET,
+  saveUninitialized:true,
+  cookie: { maxAge: 3600*24*15 },
+  resave: false 
+}));
 
 const corsConfig = {
     origin: '*',
@@ -38,12 +49,7 @@ app.use(cors(corsConfig));
 const port = process.env.PORT;
 
 
-app.use(session({ 
-    secret: process.env.SECRET,
-    resave: false,
-    saveUninitialized: true,
-    cookie: { maxAge: 60000 }
-  }))
+
 app.use(cookieparser());
 app.use(express.urlencoded({
     extended: true
@@ -57,6 +63,10 @@ const signup = require('./route/signup');
 const login = require('./route/login');
 const verify = require('./route/verify');
 const course = require('./route/course');
+const dashboard = require('./route/dashboard');
+const logout = require('./route/logout');
+const forms = require('./route/forms');
+const image = require('./route/image');
 const test = require('./route/test');
 
 // routes 
@@ -65,6 +75,10 @@ app.use('/signup',signup);
 app.use('/login',login);
 app.use('/verify',verify);
 app.use('/course',course);
+app.use('/dashboard',dashboard);
+app.use('/forms',forms);
+app.use('/logout',logout);
+app.use('/image',image);
 app.use('/test',test);
 
 // cookie test

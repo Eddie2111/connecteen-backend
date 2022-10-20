@@ -76,25 +76,49 @@ const loggedin= {
     message: "logged in",
     route: "/success"
 }
-const wrongCode = {
-    status: 400,
-    message: "wrong code",
-    route: "/verify"
-}
-const verificationSuccess = {
+const loggedout= {
     status: 200,
-    message: "verification success",
+    message: "logged out",
+    route: "/login"
+}
+const noSession = {
+    status: 400,
+    message: "no session",
+    route: "/login"
+}
+const noToken = {
+    status: 400,
+    message: "no token",
+    route: "/login"
+}
+const wrongToken = {
+    status: 400,
+    message: "wrong token",
+    route: "/login"
+}
+const tokenSuccess = {
+    status: 200,
+    message: "success",
     route: "/success"
 }
-const verificationFail = {
-    status: 404,
-    message: "verification failed",
-    route: "/signup"
+const tokenFail = {
+    status: 400,
+    message: "token fail",
+    route: "/login"
+}
+const noEmailToken = {
+    status: 400,
+    message: "no email token",
+    route: "/login"
+}
+const wrongEmailToken = {
+    status: 400,
+    message: "wrong email token",
+    route: "/login"
 }
 module.exports = {
-        success, fail, wrongPassword, noinput, errorRoute, 
-        noUser, noEmail, passwordMatch, improperInput,
-        mailExists, signupSuccess, signupFail, loggedin,
-        netError, loginwrongPassword, loginpasswordMatch, 
-        loginnoUser, wrongCode, verificationSuccess, verificationFail
+        success, fail, wrongPassword, noinput, errorRoute, tokenFail, tokenSuccess, 
+        noUser, noEmail, passwordMatch, improperInput,noEmailToken, noSession, loggedout, 
+        mailExists, signupSuccess, signupFail, loggedin,wrongEmailToken, noToken, noUser,
+        netError, loginwrongPassword, loginpasswordMatch, loginnoUser, wrongToken, 
     };

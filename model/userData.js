@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const userSchema = new mongoose.Schema({
+const userData = new mongoose.Schema({
     username: String,             // not user defined, backend defined for better indexing
     name: {
         type:      String,
@@ -170,12 +170,3 @@ const Userone = new mongoose.Schema({            //look up schema, will be used 
 const userOne = mongoose.model('Userone', Userone);
 const User    = mongoose.model('User', userSchema);
 module.exports = {User,userOne};
-
-/////////////////
-/** for password validation
-validate: {
-    validator: function(v) {
-        return /^[a-zA-Z0-9]+$/.test(v);
-    }
-}
- */
