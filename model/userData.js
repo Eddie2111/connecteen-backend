@@ -167,6 +167,6 @@ const Userone = new mongoose.Schema({            //look up schema, will be used 
   },
    { collection: 'user' }
 );
-const userOne = mongoose.model('Userone', Userone);
+
 const User    = mongoose.model('User', userSchema);
 module.exports = {User,userOne};

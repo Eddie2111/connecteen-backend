@@ -1,6 +1,9 @@
 const mongoose = require('mongoose');
-const url = `mongodb+srv://${process.env.DBUSERNAME}:${process.env.DBPASSWORD}@${process.env.DBCLUSTER}`;
-//const url = 'mongodb://localhost:27017/test';
+//const url = `mongodb+srv://${process.env.DBUSERNAME}:${process.env.DBPASSWORD}@${process.env.DBCLUSTER}`;
+//before compose:
+    // const url = 'mongodb://mongo:27016/Connecteen';
+// before compose
+const url = 'mongodb://localhost:27016/Connecteen';
 const connection = mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true })
    .then(() => console.log('NOSQL DB:200'))
    .catch(err => console.error('NOSQL DB:500', err));

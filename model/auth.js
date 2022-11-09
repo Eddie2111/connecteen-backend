@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const userSchema = new mongoose.Schema({
+const userAuth = new mongoose.Schema({
     username: String,             // not user defined, backend defined for better indexing
     name: {
         type:      String,
@@ -37,115 +37,7 @@ const userSchema = new mongoose.Schema({
         type:      Boolean,
         default:   false
     },
-    firstname: {
-        type:      String,
-        length:    [3, 20],
-        required:  true,
-        trim:      true,
-        validate: {
-            validator: function(v) {
-                return /^[a-z A-Z]+$/.test(v);
-            }
-        }
-    },
-    lastname: {
-        type:      String,
-        length:    [3, 20],
-        required:  true,
-        trim:      true,
-        validate: {
-            validator: function(v) {
-                return /^[a-z A-Z]+$/.test(v);
-            }
-        },
-    },
-    phone: {
-        type:      String,
-        length:    [3, 20],
-        trim:      true,
-        validate: {
-            validator: function(v) {
-                return /^[0-9]+$/.test(v);
-            }
-        }
-    },
-    birthdate: {
-        type:      String,
-        length:    [3, 20],
-        trim:      true,
-        validate: {
-            validator: function(v) {
-                return /^[0-9]+$/.test(v);
-            }
-        }
-    },
-    address: {
-        type:      String,
-        length:    [3, 20],
-        trim:      true,
-        validate: {
-            validator: function(v) {
-                return /^[a-z A-Z 0-9]+$/.test(v);
-            }
-        }
-    },
-    schoolName: {
-        type:      String,
-        required:  true,
-        length:    [3, 35],
-        trim:      true,
-        validate: {
-            validator: function(v) {
-                return /^[a-z A-Z 0-9]+$/.test(v);
-            }
-        }
-    },
-    collegeName: {
-        type:      String,
-
-        length:    [3, 35],
-        trim:      true,
-        validate: {
-            validator: function(v) {
-                return /^[a-z A-Z 0-9]+$/.test(v);
-            }
-        }
-    },
-    universityName: {
-        type:      String,
-        length:    [3, 35],
-        trim:      true,
-        validate: {
-            validator: function(v) {
-                return /^[a-z A-Z 0-9]+$/.test(v);
-            }
-        }
-    },
-    companyName: {
-        type:      String,
-        length:    [3, 35],
-        trim:      true,
-        validate: {
-            validator: function(v) {
-                return /^[a-z A-Z 0-9]+$/.test(v);
-            }
-        }
-    },
-    jobTitle: {
-        type:      String,
-        length:    [3, 20],
-        trim:      true,
-        validate: {
-            validator: function(v) {
-                return /^[a-z A-Z]+$/.test(v);
-            }
-        }
-    },
-    jobDescription: {
-        type:      String,
-        length:    [3, 120],
-        trim:      true,
-        }
+    
   },
    { collection: 'user' }
 );
@@ -168,7 +60,7 @@ const Userone = new mongoose.Schema({            //look up schema, will be used 
    { collection: 'user' }
 );
 const userOne = mongoose.model('Userone', Userone);
-const User    = mongoose.model('User', userSchema);
+const User    = mongoose.model('User', userAuth);
 module.exports = {User,userOne};
 
 /////////////////

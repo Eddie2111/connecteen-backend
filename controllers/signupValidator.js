@@ -1,6 +1,12 @@
 ////////// sign up validator //////////
 const bcrypt = require('bcrypt');
-const argon2 = require('argon2');
+
+const validateName = (name) => {
+    if(name.length < 3){
+        return false;
+    }
+    return name;
+}
 
 const validateEmail = (email) => {
     try{
@@ -10,31 +16,35 @@ const validateEmail = (email) => {
     return String(testedemail[0]);
     }
     catch(err){
-        return "not a valid email";
+        return false;
     }
   };
 
-const validatePassword = (password) => {
+const validatePassword =  (password) => {
   try{
-    const saltRounds = 10;
-    const salt = bcrypt.genSaltSync(saltRounds);
-    const hash = bcrypt.hashSync(password, salt);
-    console.log(hash);
-  return String(hash).substring(0,64);
+    if (password.length > 5) {
+        const saltRounds = 10;
+        const salt =  bcrypt.genSaltSync(saltRounds);
+        const hash =  bcrypt.hashSync(password, salt);
+    return String(hash).substring(0,64);
+    }
+    else{
+        return false;
+    }
   }
   catch(err){
-    return "not a valid password";
+    return false;
   }
 }
 
 function validateSignUp(data) {
     const email     = validateEmail(data.email);
     const password  = validatePassword(data.password);
-    const name      = String(data.name).match(/^[a-z A-Z]+$/);
+    const name      = validateName(data.name);
         const validated = {
             email:email,
             password:String(password),
-            name:String(name)
+            name:name
         }
     return validated;
 }
@@ -42,34 +52,34 @@ function validateSignUp(data) {
 const Joi = require('joi');
 
 const schema = Joi.object({
-name: Joi.string()
-        .min(3)
-        .max(30)
-        .pattern(new RegExp('^[a-z A-Z]{3,18}$')),
+    name: Joi.string()
+            .min(3)
+            .max(30)
+            .pattern(new RegExp('^[a-z A-Z]{0,30}$')),
 
-password: Joi.string()
-    .pattern(new RegExp('^.{0,65}$')),
-    //'^[a-z A-Z0-9]{3,30}$'
-repeat_password: Joi.ref('password'),
+    password: Joi.string()
+        .pattern(new RegExp('^.{0,65}$')),
+        //'^[a-z A-Z0-9]{3,30}$'
+    repeat_password: Joi.ref('password'),
 
-access_token: [
-    Joi.string(),
-    Joi.number()
-],
+    access_token: [
+        Joi.string(),
+        Joi.number()
+    ],
 
-birth_year: Joi.number()
-                .integer()
-                .min(1900)
-                .max(2013),
+    birth_year: Joi.number()
+                    .integer()
+                    .min(1900)
+                    .max(2013),
 
-email: Joi.string()
-    .email(
-        { 
-            minDomainSegments: 2, 
-            maxDomainSegments: 5,
-            //tlds: { allow: ['com', 'net','ac.bd'] } 
-        }
-    ),
+    email: Joi.string()
+        .email(
+            { 
+                minDomainSegments: 2, 
+                maxDomainSegments: 5,
+                //tlds: { allow: ['com', 'net','ac.bd'] } 
+            }
+        ),
                 
 })
 
@@ -81,7 +91,7 @@ email: Joi.string()
 // -> { value: {}, error: '"username" is required' }
 
 // Test validation Schema from here -
-const value = schema.validate({ name: 'ontora biswas', email:"tarek42223@gmail.com", password:'AA!@12bbb' });
+//const value = schema.validate({ name: 'ontora biswas', email:"tarek42223@g.bracu.ac.bd", password:'AA!@12bbb' });
 //console.log(value)
 
             

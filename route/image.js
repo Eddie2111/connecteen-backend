@@ -28,8 +28,9 @@ router
     })
     .post(
         
-        upload.array('file', 12), function (req, res, next) {
-        console.log(req.files)
+        upload.array('file', 12), (req, res, next)=> {
+        console.log(req.files);
+        console.log(req.body);
         res.send("done");
     });
         

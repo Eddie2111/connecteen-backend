@@ -9,6 +9,7 @@ const router = express.Router();
 const { userOne } = require('../model/auth');
 const {validateSignUp,schema} = require('../controllers/signupValidator');
 const session = require('express-session');
+const dayjs = require('dayjs');
 router
     .route('/')
     .get((req,res)=>{
@@ -17,6 +18,7 @@ router
     .post((req,res)=>{
       const {error,value} = schema.validate(req.body);
       userOne.findOne({email:req.body.email}).then(result=>{
+        console.log("login initiated");
         console.log("Stage-1 completed")
         bcrypt.compare(value.password, result.password).then((isMatch) => {
         console.log("Stage-2 completed")
@@ -27,10 +29,10 @@ router
               username: result.username,
               email:result.email
             },
-            process.env.secret
+            process.env.TEST
           );
       
-          const serialised = serialize("OursiteJWT", token, {
+          const serialised = serialize("contact", token, {
             httpOnly: true,
             secure: true,
             sameSite: "strict",
@@ -48,8 +50,14 @@ router
 
           console.log("Stage-3 completed")
 
-          res.setHeader("Set-Cookie", serialised);
-          console.log("Stage-4 completed")
+          res.setHeader("user", serialisedd);
+          console.log("Stage-4 completed");
+          res.cookie("secureCookie", JSON.stringify(serialised), {
+            secure: true,
+            httpOnly: true,
+            sameSite: false,
+            expires: dayjs().add(30, "days").toDate(),
+            });
           res.status(200).json({ message: "Success!",result:result,status:"success",serialised:serialisedd,token:token });
           session.token = token;
           console.log("Stage-5 completed")

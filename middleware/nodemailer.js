@@ -1,4 +1,4 @@
-
+/* DEPRECATED */
 var nodemailer = require('nodemailer');
 var nodeoutlook = require('nodejs-nodemailer-outlook')
 

@@ -1,7 +1,7 @@
 ////////// Login validator //////////
 const bcrypt = require('bcrypt');
 
-const validateEmail = (email) => {
+const validateEmail = async (email) => {
     try{
     const testedemail = email.trim().substring(0,35).toLowerCase().match(
         /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
@@ -12,7 +12,7 @@ const validateEmail = (email) => {
         return "not a valid email";
     }
     };
-const validatePassword = (password) => {
+const validatePassword = async (password) => {
   try{
     const saltRounds = 10;
     const salt = bcrypt.genSaltSync(saltRounds);
@@ -26,7 +26,7 @@ const validatePassword = (password) => {
   }
 }
 
-function validateLogin(data) {
+async function validateLogin(data) {
     const email     = validateEmail(data.email);
     const password  = validatePassword(data.password);
         const validated = {
@@ -74,7 +74,7 @@ email: Joi.string()
 // -> { value: {}, error: '"username" is required' }
 
 // Test validation Schema from here -
-const value = schema.validate({ name: 'ontora biswas', email:"tarek42223@gmail.com", password:'AA!@12bbb' });
+// const value = schema.validate({ name: 'ontora biswas', email:"tarek42223@gmail.com", password:'AA!@12bbb' });
 //console.log(value)
 
             

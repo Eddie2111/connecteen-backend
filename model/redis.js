@@ -1,23 +1,30 @@
 try{
     const Redis = require('ioredis');    
-const redis = new Redis({
-    host: process.env.redishost,
-    port: process.env.redisport,
-    username: process.env.redisusername,
-    password: process.env.redispassword
-  })
+    const redis = new Redis({
+        host: "localhost",
+        port: "6379",
+        username: "",
+        password: ""
+    })
     redis.on('connect', function() {
         console.log('redis:200');
     });
     module.exports = redis;
 }
 catch (err){
-    console.log(err);
+    //console.log(err);
     console.log("redis:500")
     const redis= "dummy";
     module.exports = redis;
 }
-    
+    /*
+        const redis = new Redis({
+        host: process.env.redishost,
+        port: process.env.redisport,
+        username: process.env.redisusername,
+        password: process.env.redispassword
+    })
+    */
 
 
 /*

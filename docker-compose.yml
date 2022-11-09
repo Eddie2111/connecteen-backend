@@ -1,0 +1,59 @@
+version: "3.9"
+services:
+  app:
+    container_name: Connecteen_main_core
+    restart: always
+    build: ./
+    ports:
+      - '80:3200'
+    links:
+      - mongo
+      - redis
+    environment:
+    - SECRET                = 09f26e402586e2faa8da4c98a35f1b20d6b033c6097befa8be3486a829587fe2f90a832bd3ff9d42710a4da095a2ce285b009f0c3730cd9b8e1af3eb84df6611
+    - PORT                  = 3200
+    - CLOUD_NAME            = 'homeeventtest'
+    - API_KEY               = '132279589493379'
+    - API_SECRET            = 'taqT7MQhuuYI5Ug3YVf8_AnRR8s'
+    - DBUSERNAME            = "eddie2111"
+    - DBPASSWORD            = "bmwM3GTR."
+    - DBCLUSTER             = "cluster0.yql3v.mongodb.net/Connecteen"
+    - SENDGRID_API_KEY      = "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"
+    - EventMail             =  "spamzfortarek@outlook.com"
+    - EventMailPass         =  "bmwM3GTR."
+    - redishost             = "redis-14306.c294.ap-northeast-1-2.ec2.cloud.redislabs.com"
+    - redisport             = "14306"
+    - redispassword         = "bmwM3GTR."
+    - redisusername         = "connecteen"
+    - DATABASE_URL          = "postgres://bkvjfxyzqpthzm:cc6c85eff4ba09c8d9b2caf6324ea79ff0894ee87e39cab4188786392a2a1abb@ec2-34-199-68-114.compute-1.amazonaws.com:5432/d73rj17hsedg1o"
+    - HEROKU_CLI            = "heroku pg:psql postgresql-fitted-21901 --app postgressdb-2111"
+    - HEROKU_POSTGRES_PASSWORD = "cc6c85eff4ba09c8d9b2caf6324ea79ff0894ee87e39cab4188786392a2a1abb"
+    - POSTGRES_PORT         = "5432"
+    - HEROKU_POSTGRES_USER  = "bkvjfxyzqpthzm"
+    - HEROKU_DATABASE       = "d73rj17hsedg1o"
+    - DATABASE_HOST         = "ec2-34-199-68-114.compute-1.amazonaws.com"
+    - TEST                  = "r3r/*-+32ew90f/l;.0-lk76-0-0-.kj0hio,09i/lk';po["
+  mongo:
+    container_name: dataDB
+    image: mongo
+    ports: 
+    - '27017:27017'
+  redis:
+    container_name: cache
+    image: redis
+    ports:
+    - '6379:6379'
+  postgres:
+    container_name: auth
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: "d73rj"
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
+volumes:
+ mongodb:
+ postgres:

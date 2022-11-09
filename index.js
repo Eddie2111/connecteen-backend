@@ -1,124 +1,57 @@
 require('dotenv').config();
 
+// express
 const express       = require('express');
 const app           = express();
 const session       = require("express-session");
 
+// databases
 const postgres      = require('./model/postgres');
 const atlas         = require('./model/atlas');
 const redis         = require('./model/redis');
+const prismadb      = require('./model/prisma');
 
+// middlewares
 const cookieparser  = require("cookie-parser");
-const bodyParser    = require('body-parser');
 const cors          = require('cors');
-const dayjs         = require('dayjs');
-const jwt           = require('jsonwebtoken');
-// backloggers
-const morgan     = require('morgan');
-const fs         = require('fs');
-const path       = require('path')
+
 
 require('./test/test');
 
 
 // environment setups
-app.use(morgan('common', {
-  stream: fs.createWriteStream(path.join(__dirname, 'access.log'), { flags: 'a' })
-}))
-
-app.use(session({
-  secret: process.env.SECRET,
-  saveUninitialized:true,
-  cookie: { maxAge: 3600*24*15 },
-  resave: false 
-}));
-
-const corsConfig = {
-    origin: '*',
-    methods: 'GET,POST', //GET,HEAD,PUT,PATCH,POST,DELETE
-    preflightContinue: false,
-    optionsSuccessStatus: 204,
-    allowedHeaders: ['Content-Type', 'Authorization'],
-    exposedHeaders: ['Content-Type', 'Authorization'],
-    maxAge: 600,
-    preflightContinue: false,
-    credentials: true
-}
-app.use(cors(corsConfig));
-
 const port = process.env.PORT;
-
-
-
+const {corsOptions, sessionSettings, corsConfig} = require('./data/config');
+app.use(session(sessionSettings));
+app.use(cors(corsOptions));
 app.use(cookieparser());
+app.use(express.json())
 app.use(express.urlencoded({
     extended: true
 }));
-app.use(express.json())
 
-
-// route imports
-const welcome = require('./route/index');
-const signup = require('./route/signup');
-const login = require('./route/login');
-const verify = require('./route/verify');
-const course = require('./route/course');
-const dashboard = require('./route/dashboard');
-const logout = require('./route/logout');
-const forms = require('./route/forms');
-const image = require('./route/image');
-const test = require('./route/test');
 
 // routes 
-app.use('/',welcome);
-app.use('/signup',signup);
-app.use('/login',login);
-app.use('/verify',verify);
-app.use('/course',course);
-app.use('/dashboard',dashboard);
-app.use('/forms',forms);
-app.use('/logout',logout);
-app.use('/image',image);
-app.use('/test',test);
+app.use('/',require('./route/index'));
+app.use('/signup',require('./route/signup'));
+app.use('/login',require('./route/login'));
+app.use('/verify',require('./route/verify'));
+app.use('/course',require('./route/course'));
+app.use('/dashboard',require('./route/dashboard'));
+app.use('/forms',require('./route/forms'));
+app.use('/logout',require('./route/logout'));
+app.use('/image',require('./route/image'));
+app.use('/test',require('./route/test'));
 
-// cookie test
-app.use("/cookies", (req, res) => {
-  const dataToSecure = {
-    dataToSecure: "e9032hre3209hr93820hrf9302hf940h904",
-  };
-  const token = jwt.sign(
-    {
-      exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 30, // 30 days
-      username: "result.username",
-      email:"result.email"
-    },
-    process.env.secret
-  );
+//test route
 
-  const serialised = serialize("OursiteJWT", token, {
-    httpOnly: true,
-    secure: true,
-    sameSite: "strict",
-    maxAge: 60 * 60 * 24 * 30,
-    path: "/",
-  });
-
-  res.cookie("secureCookie", JSON.stringify(dataToSecure), {
-    secure: true,
-    httpOnly: true,
-    sameSite: false,
-    expires: dayjs().add(30, "days").toDate(),
-  });
-
-  res.json({
-    message: "Cookie set",
-    status: "status is fine",
-    code: "200",
-    messagio: "no fail"
-  });
+app.get('/trace',function(req, res) {
+    const ipAddress = req.socket.remoteAddress;
+    var geoip = require('geoip-lite');
+    //var ip = "207.97.227.239";
+    var geo = geoip.lookup(ipAddress);
+    res.send(geo);
 });
-
-
 
 
 // error handling
@@ -131,13 +64,11 @@ app.use(function(req, res, next) {
   });
   
 app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
   res.status(err.status || 500);
   res.send(errorRoute);
 });
-
 
 
 app.listen(port,()=>{

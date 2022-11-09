@@ -2,7 +2,8 @@ const express = require('express');
 const router = express.Router();
 const sendGridMailer = require('../middleware/sendGrid');
 const {verificationInput} = require('../model/verification');
-const {User} = require('../model/auth');
+const {userAuth} = require('../model/auth');
+const sendingCookie = require('../data/config');
 const {validateSignUp,schema} = require('../controllers/signupValidator');
 
 const username = ()=>{
@@ -12,6 +13,7 @@ const username = ()=>{
     return username;
 }
 const { signupFail, mailExists, netError, improperInput } = require('../controllers/messages');
+const { createCode, createOne, deleteCode } = require('../model/prisma');
 
 router
     .route('/')
@@ -19,45 +21,77 @@ router
         res.send('/signup');
     })
     .post((req,res)=>{
-        const {error,value} = schema.validate(req.body);
-        if(error){
-            const message = {...improperInput, reason: error.details[0].message};
-            res.status(400).send(message);
+        const {name,email,password,location} = req.body;
+        console.log(req.body);
+        //validation
+        if (!location){
+            console.log('avoided request')
+            //avoiding
         }
-        else{
-            const validated = validateSignUp(req.body);
-            console.log(validated);
-            const data = {
-                username:username(), 
-                isConfirmed:false,
-                ...validated};
-            console.log("stage-1 complete");
-            const user = new User(data);
-            user.save().then(result=>{
-                // success
-                console.log("stage-2 complete");
-                const code = Math.floor(Math.random() * (9999 - 1000) + 1000);
-                const verification = new verificationInput({
-                    code: code,
-                    email: data.email
-                });
-                verification.save();
-                console.log("stage-3 complete");
-                
-                try{ sendGridMailer(code,validated.email),console.log("ok"),console.log("stage-4 complete")}
-                catch(err){console.log(err),console.log("stage-4 complexity");}
-                res.json({result,value});
-            }).catch(err=>{
-                if (err.code===11000){
-                    res.status(400).send(mailExists);
-                    console.log("stage-5 complexity for mail existing");
+        if (location){
+            console.log('request accepted');
+            try{
+                const data = {
+                    name:name,
+                    email:email,
+                    password:password
                 }
-                else{
-                    res.send({netError,err,mailExists});
-                    console.log("stage-5 complexity for network error");
+                const dataSet = schema.validate(validateSignUp(data));
+                const purfiedData = {
+                    username:username(),
+                    fullname:dataSet.value.name,
+                    email:dataSet.value.email,
+                    password:dataSet.value.password,
+                    location:location
                 }
+                const code = Math.floor((Math.random() * 9000) + 1000);
+                //user created
+                createOne(purfiedData)
+                .then((result)=>{
+                    // create code
+                    createCode({
+                        email:email,
+                        code:code,
+                        createdAt:parseInt(String(new Date().getTime()).slice(0,10)),
+                        expiredAt:parseInt(String(new Date().getTime()+1200000).slice(0,10))
+                    }) // on success creating code at first attempt
+                    .then(()=>{
+                        // send mail
+                        // sendGridMailer(email,code)
+                            res.header('fullname',name,sendingCookie)
+                            res.json({message:'success',email:"test@example.com1"})
+                    }) // on failure creating code at first attempt
+                    .catch((err)=>{
+                        deleteCode(email)
+                        .then(()=>{
+                            createCode({
+                                email:email,
+                                code:code,
+                                createdAt:parseInt(String(new Date().getTime()).slice(0,10)),
+                                expiredAt:parseInt(String(new Date().getTime()+1200000).slice(0,10))
+                            })
+                            .then(()=>{
+                                // send mail
+                                // sendGridMailer(email,code)
+                                res.header('fullname',name,sendingCookie)
+                                res.json({message:'success',email:"example.com2"})
+                            })
+                            .catch((err)=>{
+                                res.status(500).json({message:netError,reason:"core server connection error","level":"5"})
+                            })
+                        })
+                    })
+                })
+                .catch((err)=>{
+                    console.log(err.code);
+                    res.json({"message":'notworking'})
+                }
+                )
             }
-            );
+            catch(err){
+                console.log(err,"yoo this works???");
+                res.json(signupFail);
+            }   
         }
     });
         
