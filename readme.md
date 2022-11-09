@@ -1,4 +1,4 @@
-# Connecteen [Building using Node.JS + Express.JS + MongoDB]
+# Connecteen [Building using Node.JS + Express.JS + MongoDB + Postgres + Redis + PM2 on Container]
 
 This future platform will bring in all the advanced skilled teens into a single community.
 
