@@ -36,6 +36,8 @@ This future platform will bring in all the advanced skilled teens into a single 
 - Reverse proxy using nginx
 - Container deployment on ECS using Docker Image.
 - Session storage using redis
+- Proper load distribution test, memory distribution test.
+- Minimal and optimized thread control system.
 
 # Routes implemented
 - welcome
