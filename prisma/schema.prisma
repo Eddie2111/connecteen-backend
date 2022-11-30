@@ -12,10 +12,10 @@ datasource db {
 
 model Users {
   username String  @unique @db.VarChar(128)
-  email    String   @unique @db.VarChar(35)
+  email    String  @unique @db.VarChar(35)
   password String  @db.VarChar(65)
   fullname String  @db.VarChar(35)
-  location String  @db.VarChar(16)
+  location String  @db.VarChar(32)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }

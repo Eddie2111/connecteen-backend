@@ -16,8 +16,7 @@ router
     })
     .post((req,res)=>{
         const sum = {...archivedPost,post:req.body};
-        
-        res.json(req.method);
+        res.json(req.headers);
     });
         
 module.exports = router;

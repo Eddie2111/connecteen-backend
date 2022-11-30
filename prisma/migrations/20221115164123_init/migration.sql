@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "Users" ALTER COLUMN "location" SET DATA TYPE VARCHAR(32);

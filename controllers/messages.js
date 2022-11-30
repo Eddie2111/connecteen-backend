@@ -10,6 +10,17 @@ const wrongPassword = {
     status: 400,
     message: "wrong password"
 }
+const verificationFail = {
+    status: 400,
+    message: "verification failed",
+    route: "/signup"
+}
+const verificationSuccess = {
+    status: 200,
+    message: "verification success",
+    route: "/login"
+}
+
 const noUser = {
     status: 400,
     message: "no user found"
@@ -45,6 +56,12 @@ const netError = {
     status: 500,
     message: "network error",
 }
+const wrongCode = {
+    status: 400,
+    message: "wrong code",
+    route: "/signup"
+}
+
 const loginwrongPassword =
 {
     status: 400,
@@ -117,8 +134,8 @@ const wrongEmailToken = {
     route: "/login"
 }
 module.exports = {
-        success, fail, wrongPassword, noinput, errorRoute, tokenFail, tokenSuccess, 
-        noUser, noEmail, passwordMatch, improperInput,noEmailToken, noSession, loggedout, 
+        success, fail, wrongPassword, noinput, errorRoute, tokenFail, tokenSuccess, verificationSuccess,
+        noUser, noEmail, passwordMatch, improperInput,noEmailToken, noSession, loggedout, wrongCode,
         mailExists, signupSuccess, signupFail, loggedin,wrongEmailToken, noToken, noUser,
-        netError, loginwrongPassword, loginpasswordMatch, loginnoUser, wrongToken, 
+        netError, loginwrongPassword, loginpasswordMatch, loginnoUser, wrongToken, verificationFail
     };

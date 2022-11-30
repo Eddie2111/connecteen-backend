@@ -1,7 +1,9 @@
 const Joi = require('joi');
 const verification = Joi.object({
-    code: Joi.string()
-            .pattern(new RegExp('^[0-9]{4}$'))
+    code: Joi.number()
+            .integer()
+            .min(1000)
+            .max(9000)
             .required(),
     email: Joi.string()
             .email(

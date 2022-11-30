@@ -1,80 +1,79 @@
-
-
-const {serialize} = require('cookie');
-const {HTTP_STATUS_CODES} = require('http-status-enum');
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
 const express = require('express');
 const router = express.Router();
-const { userOne } = require('../model/auth');
-const {validateSignUp,schema} = require('../controllers/signupValidator');
-const session = require('express-session');
-const dayjs = require('dayjs');
+const {findOne} = require('../model/prisma');
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
+const redis = require('../model/redis');
+const {sendingHeader} = require('../data/config');
+const {User} = require('../model/userData');
+const {
+    validateLogin,
+    schema }        = require('../controllers/loginValidator');
+const location = ''
 router
     .route('/')
-    .get((req,res)=>{
-        res.json({...archivedGet,get:req.body});
-    })
-    .post((req,res)=>{
-      const {error,value} = schema.validate(req.body);
-      userOne.findOne({email:req.body.email}).then(result=>{
-        console.log("login initiated");
-        console.log("Stage-1 completed")
-        bcrypt.compare(value.password, result.password).then((isMatch) => {
-        console.log("Stage-2 completed")
-        if (isMatch) {
-          const token = jwt.sign(
-            {
-              exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 30, // 30 days
-              username: result.username,
-              email:result.email
-            },
-            process.env.TEST
-          );
-      
-          const serialised = serialize("contact", token, {
-            httpOnly: true,
-            secure: true,
-            sameSite: "strict",
-            maxAge: 60 * 60 * 24 * 30,
-            path: "/",
-          });
-          const serialisedd = ({
-            token: token,
-            httpOnly: true,
-            secure: true,
-            sameSite: "strict",
-            maxAge: 60 * 60 * 24 * 30,
-            path: "/",
-          });
+    .post(async(req,res)=>{
+        const {email,password,location} = req.body;
+        const user = {email,password};
+        const dataSet = await schema.validate(validateLogin({ email:email, password:password }));
+        if(dataSet.value){
+            await findOne(dataSet.value.email)
+                .then(async(data)=>{
+                    if(!data){
+                        //ending → no data
+                        res.json({status:"on test",code:400, data:"data"})
+                    }
+                    if(data){
+                        //ending → data found
+                        await bcrypt.compare(dataSet.value.password, data.password, async function(err, result) {
+                            if(err){
+                                res.json({status:"on test",code:400, data:"data"})
+                            }
+                            if(result && location!==''){
+                                //ending → password matched
+                                await User.findOne({username:data.username})
+                                    .then(async(user)=>{
+                                        const username = data.username;
+                                        const ajax = jwt.sign(username,process.env.secret);
+                                        const value = {
+                                            "token": ajax,
+                                            "iat": Date.now(),
+                                            "exp": Date.now() + 1000*60*60*24*3,
+                                        }
+                                        const dataSet = jwt.sign( value, process.env.SECRET);
+                                        const confirmation = user.isConfirmed;
+                                        redis.hmset(username, value);
+                                        res.header(sendingHeader);
+                                        res.cookie('connectId', dataSet, { path: '/', secure: true, httpOnly: true, expires: new Date(Date.now() + 900000) });
+                                        res.cookie('rememberme', '1', { expires: new Date(Date.now() + 900000), httpOnly: true, secure:true })
+                                        res.json({status:"on test",code:200, data:dataSet,isConfirmed:confirmation})
 
-          console.log("Stage-3 completed")
+                                    })
+                                    .catch((err)=>{
+                                        // resend to verify
+                                        res.json({status:"on test",code:400, data:"data",route:"/verify",msg:err})
+                                    })
+                            }
+                            });
 
-          res.setHeader("user", serialisedd);
-          console.log("Stage-4 completed");
-          res.cookie("secureCookie", JSON.stringify(serialised), {
-            secure: true,
-            httpOnly: true,
-            sameSite: false,
-            expires: dayjs().add(30, "days").toDate(),
-            });
-          res.status(200).json({ message: "Success!",result:result,status:"success",serialised:serialisedd,token:token });
-          session.token = token;
-          console.log("Stage-5 completed")
-        } 
-        else {
-          res.json({
-            status: 'error',
-            error: 'Password and email does not match.',    
-          });
-          console.log("Stage-5 complexity")
-
+                        }
+                    
+                })
+                .catch(async(data)=>{
+                    res.json({status:"on test",code:400, data:data})
+                })
+            .catch((err)=>{
+                res.json({status:"on test",code:400, data:err})
+            })
         }
-      });
-      
-    })
+        else{
+            res.json({status:"on test",code:400, data:"level-5"})
+        }
 
-    });
+
+        //after getting data
+
+    })
         
 module.exports = router;
 

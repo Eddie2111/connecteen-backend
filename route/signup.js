@@ -1,8 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const sendGridMailer = require('../middleware/sendGrid');
-const {verificationInput} = require('../model/verification');
-const {userAuth} = require('../model/auth');
+const {User} = require('../model/userData');
 const sendingCookie = require('../data/config');
 const {validateSignUp,schema} = require('../controllers/signupValidator');
 
@@ -13,30 +12,29 @@ const username = ()=>{
     return username;
 }
 const { signupFail, mailExists, netError, improperInput } = require('../controllers/messages');
-const { createCode, createOne, deleteCode } = require('../model/prisma');
+const { createCode, createOne, deleteCode, findOne } = require('../model/prisma');
+
 
 router
     .route('/')
     .get((req,res)=>{
         res.send('/signup');
     })
-    .post((req,res)=>{
+    .post(async(req,res)=>{
         const {name,email,password,location} = req.body;
         console.log(req.body);
         //validation
-        if (!location){
+        const dataSet = schema.validate(validateSignUp({ name:name, email:email, password:password }));
+        if (!location || !name || !email || !password || dataSet.error) {
             console.log('avoided request')
+            res.json({state:"request rejected",data:dataSet.error._original,message:improperInput});
             //avoiding
         }
-        if (location){
-            console.log('request accepted');
+        if(!dataSet.error){
             try{
-                const data = {
-                    name:name,
-                    email:email,
-                    password:password
-                }
-                const dataSet = schema.validate(validateSignUp(data));
+
+                // validation
+                const code = Math.floor((Math.random() * 9000) + 1000);
                 const purfiedData = {
                     username:username(),
                     fullname:dataSet.value.name,
@@ -44,55 +42,75 @@ router
                     password:dataSet.value.password,
                     location:location
                 }
-                const code = Math.floor((Math.random() * 9000) + 1000);
-                //user created
-                createOne(purfiedData)
-                .then((result)=>{
-                    // create code
-                    createCode({
-                        email:email,
-                        code:code,
-                        createdAt:parseInt(String(new Date().getTime()).slice(0,10)),
-                        expiredAt:parseInt(String(new Date().getTime()+1200000).slice(0,10))
-                    }) // on success creating code at first attempt
-                    .then(()=>{
-                        // send mail
-                        // sendGridMailer(email,code)
-                            res.header('fullname',name,sendingCookie)
-                            res.json({message:'success',email:"test@example.com1"})
-                    }) // on failure creating code at first attempt
-                    .catch((err)=>{
-                        deleteCode(email)
-                        .then(()=>{
-                            createCode({
+                // validation
+
+                // injecting into auth DB
+                await createOne(purfiedData)
+                    .then(async(result)=>{
+                        if(result.code === 'P2002'){
+                            // check if the account exists with NOSQL data
+                            findOne(dataSet.value.email)
+                                .then((result)=>{
+                                    console.log(result)
+                                    User.findOne({username:String(result.username)}).then((result=>{
+                                            if(result.isConfirmed===true){
+                                                res.json({state:"request rejected",data:result,message:mailExists,route:"/login"})
+                                            }
+                                            if(result.isConfirmed===false){
+                                                res.json({state:"request rejected",data:result,message:mailExists,route:"/verify"})
+                                            }
+                                        }
+                                    ))
+                                    .catch((err)=>{
+                                        res.json({state:"request rejected",data:err,message:mailExists,phase:520})
+                                    })
+                                    
+                                })
+                                .catch(err=>{res.json({error:{netError},phase:510})})
+                        }
+                        if (result.code === undefined){
+                            // clean exit → send verification code 
+                            await createCode({
                                 email:email,
                                 code:code,
                                 createdAt:parseInt(String(new Date().getTime()).slice(0,10)),
                                 expiredAt:parseInt(String(new Date().getTime()+1200000).slice(0,10))
                             })
-                            .then(()=>{
-                                // send mail
-                                // sendGridMailer(email,code)
-                                res.header('fullname',name,sendingCookie)
-                                res.json({message:'success',email:"example.com2"})
+                            .then((result1)=>{
+                                //sendgrid mail
+                                //sendGridMailer(code,email) // →  uncomment this line to send mail
+                                const data = new User({
+                                    isConfirmed: false,
+                                    username:purfiedData.username,
+                                    firstname:purfiedData.fullname
+                                });
+                        //added nosql query: verification:true
+                                data.save(data)
+                                .then(result => {
+                                    res.header('fullname',name,sendingCookie)
+                                    res.json({message:'success',email:"test@example.com1",route:"/verification",data:{result},route:"/verify",test:result1})
+                                })
+                                .catch(err => res.json({state:"request rejected",message:[netError,err]}))
                             })
                             .catch((err)=>{
-                                res.status(500).json({message:netError,reason:"core server connection error","level":"5"})
+                                console.log(err);
+                                res.json({state:"request rejected",message:netError});
                             })
-                        })
+                        }
                     })
-                })
-                .catch((err)=>{
-                    console.log(err.code);
-                    res.json({"message":'notworking'})
-                }
-                )
+
+                    .catch((err)=>{
+                        console.log(err);
+                        res.json(netError);
+                    });
+
             }
             catch(err){
-                console.log(err,"yoo this works???");
-                res.json(signupFail);
-            }   
+                console.log(err);
+            }
+            //avoiding
         }
+
     });
         
 module.exports = router;

@@ -1,7 +1,7 @@
-/* DEPRECATED
+
 const { Client } = require('pg');
 /*
-for online database on heroku [most probably expired by now]
+// for online database on heroku [most probably expired by now]
 const client = new Client({
     connectionString: process.env.DATABASE_URL,
     ssl: {
@@ -10,7 +10,7 @@ const client = new Client({
 });
 */
 
-/*
+// just to test that the postgres in online
 const client = new Client({
     user: 'postgres',
     host: 'localhost',

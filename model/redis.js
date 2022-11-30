@@ -55,3 +55,5 @@ redis.hgetall("mykey", (err, result) => {
   }
 });
 */
+/////////////// mem checker ////////////////////
+

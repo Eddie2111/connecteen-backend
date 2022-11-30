@@ -11,68 +11,67 @@ async function ReadAll() {
     console.log(err);
   }
 }
-ReadAll()
-  .then(async () => {
-    await prisma.$disconnect()
-  })
-  .catch(async (e) => {
-    console.error(e)
-    await prisma.$disconnect()
-    process.exit(1)
-  })
+
 
 async function ReadAllCode() {
     // ... you will write your Prisma Client queries here
     try{
         const allUsers = await prisma.Verification.findMany();
-        console.log(allUsers);
+        return allUsers
     }
     catch(err){
-        console.error(e)
         await prisma.$disconnect()
+        console.log(err)
         process.exit(1)
     }
 }
-ReadAllCode()
-    .then(async () => { 
-        await prisma.$disconnect()
-    })
-    .catch(async (e) => {
-        console.error(e)
-    })
 
-async function findOne(email,password) {
-  // ... you will write your Prisma Client queries here
+async function findOne(email) {
+    // ... you will write your Prisma Client queries here
+    try{
+      const allUsers = await prisma.Users.findUnique({
+        where: {
+          email: email
+        },
+      });
+      return allUsers;
+    }
+    catch(err){
+      return err
+    }
+  }
+
+async function findAuthOne(data) {
+  // will be used for login
   try{
     const allUsers = await prisma.Users.findUnique({
       where: {
-        email: email,
-        password: password,
+        email: data.email,
+        password: data.password,
       },
     });
-    console.log(allUsers);
+    return allUsers;
   }
   catch(err){
-    console.log(err);
+    return err
   }
 }
-async function findCode(email,code){
+async function findCode(data){
     try{
         const codes = await prisma.Verification.findUnique({
             where:{
-                email: email,
-                code: code,
+                email: data.email,
             },
         });
-        console.log(codes);
+        return codes;
     }
     catch(err){
-        console.log(err);
+        return err;
     }
 }
 
 async function createOne(data) {
-    // ... you will write your Prisma Client queries here
+    // ... creates a user
     try{
         const allUsers = await prisma.Users.create({
         data: {
@@ -132,7 +131,7 @@ async function updateOne(email,data) {
 }
 
 async function deleteOne(email) {
-    // ... you will write your Prisma Client queries here
+    // ... deletes user
     try{
         const allUsers = await prisma.Users.delete({
         where: {
@@ -152,28 +151,50 @@ async function deleteCode(email){
                 email: email,
             },
         });
-        console.log(codes);
+        return codes
     }
     catch(err){
-        console.log(err);
+        return err
     }
 }
 
 const cAt = parseInt(String(new Date().getTime()).slice(0,10))
 const eAt = parseInt(String(new Date().getTime()+1200000).slice(0,10))
 
-
-
-
 module.exports = {
     findOne,
+    findAuthOne,
     createOne,
     updateOne,
     deleteOne,
     createCode,
     findCode,
     deleteCode,
+    ReadAllCode
 }
 
-//
 
+
+// data show →
+
+//deleteOne('asm.tareq@g.bracu.ac.bd')
+//deleteCode('asm.tareq.mahmoodg.bracu.ac.bd')
+/*
+ReadAll()
+  .then(async () => {
+    await prisma.$disconnect()
+  })
+  .catch(async (e) => {
+    console.error(e)
+    await prisma.$disconnect()
+    process.exit(1)
+  })
+  
+ReadAllCode()
+  .then(async (result) => { 
+      await prisma.$disconnect()
+  })
+  .catch(async (e) => {
+      console.error(e)
+  })
+*/

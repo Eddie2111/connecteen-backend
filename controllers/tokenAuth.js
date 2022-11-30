@@ -1,10 +1,11 @@
 const jwt = require('jsonwebtoken');
-const {userOne} = require('../model/auth');
+
 async function auth(token){
   try{
     const decoded = jwt.verify(token, process.env.secret);
     const result = decoded.email;
-    const user = await userOne.findOne({email:result});
+    //const user = await userOne.findOne({email:result});
+    const user = "dummy";
     //console.log(user.email,result);
     if (result === user.email) {
       //console.log('returned true!')
@@ -19,14 +20,3 @@ catch(err){
   }
 }
 module.exports = auth;
-
-/*
-  const result = await userOne.findOne({email:decoded.email}).then(result=>{
-    if(result){
-      return true;
-    }
-    else{
-      return false;
-    }
-  })
-  */

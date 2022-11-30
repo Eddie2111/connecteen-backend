@@ -1,18 +1,21 @@
 const express = require('express');
 const router = express.Router();
 
-const {verificationOutput} = require('../model/verification');
+const {User} = require('../model/userData');
+
+const { findCode, deleteCode, findOne } = require('../model/prisma');
 const { verification } = require("../controllers/verificationValidator");
 const { verificationSuccess,verificationFail, wrongCode } = require("../controllers/messages");
-const {User} = require('../model/auth');
+
 router
     .route('/')
     .get((req,res)=>{
         res.send('/connecteen');
     })
     
-    .post((req,res)=>{
-        const {code, email} = req.body;
+    .post(async(req,res)=>{
+        const code = req.body.code;
+        const email = req.body.email.toString();
         const {error} = verification.validate({email,code});
         console.log(code,email);
         const message = {...wrongCode, reason:"inappropriate code"};
@@ -20,29 +23,43 @@ router
             console.log(error)
             res.send(message);
         }
-        else {
-            verificationOutput.findOneAndDelete({email: email,code:code}).then(result=>{
-                if (result) {
-                    console.log(result);
-                    const filter = {email: result.email};
-                    const update = {isConfirmed: true};
-                    console.log(filter,update);
-                    User.findOneAndUpdate(filter,update).then(result=>{
-                        console.log(result);
-                        res.send(verificationSuccess);
-                    }).catch(err=>{
-                        console.log(verificationFail);
-                    });
+        if(!error){
+            await findCode({"email":email})
+            .then((result)=>{
+                if(result.code===code){
+                    deleteCode(email)
+                    findOne(email)
+                    .then((result)=>{
+                        User.findOneAndUpdate({email:result.email},{$set:{isConfirmed:true}})
+                        .then(res=>console.log(res))
+                        .catch(err=>console.log(err))
+                    })
+                    .catch((err)=>{
+                        console.log("phase:x1")
+                        res.send({error:err,phase:510})
+                    })
+                    res.json({state:"request accepted",message:verificationSuccess,route:"/login"})
                 }
-                else {
-                    res.send(message);
+                else{
+                    res.json({state:"request rejected",message:wrongCode,route:"/signup"})
                 }
-            }).catch(err=>{
-                console.log(err);
+            })
+            .catch((err)=>{
+                res.json(
+                        {
+                            status:400,
+                            message:verificationFail,
+                            reason:err
+                        }
+                    );
+            })
+  
             }
+
             
-            );
-        }
-    });
+        
+
+        });
+            
         
 module.exports = router;

@@ -12,6 +12,8 @@ const redis         = require('./model/redis');
 const prismadb      = require('./model/prisma');
 
 // middlewares
+const codeClearer   = require('./middleware/codeClearer');
+const sessionRemover= require('./middleware/sessionRemover');
 const cookieparser  = require("cookie-parser");
 const cors          = require('cors');
 
@@ -21,14 +23,12 @@ require('./test/test');
 
 // environment setups
 const port = process.env.PORT;
-const {corsOptions, sessionSettings, corsConfig} = require('./data/config');
+const {corsOptions, sessionSettings} = require('./data/config');
 app.use(session(sessionSettings));
 app.use(cors(corsOptions));
 app.use(cookieparser());
 app.use(express.json())
-app.use(express.urlencoded({
-    extended: true
-}));
+app.use(express.urlencoded({extended: true}));
 
 
 // routes 
@@ -41,10 +41,12 @@ app.use('/dashboard',require('./route/dashboard'));
 app.use('/forms',require('./route/forms'));
 app.use('/logout',require('./route/logout'));
 app.use('/image',require('./route/image'));
+app.use('/auth',require('./route/auth'));
 app.use('/test',require('./route/test'));
 
 //test route
 
+// ip tracing
 app.get('/trace',function(req, res) {
     const ipAddress = req.socket.remoteAddress;
     var geoip = require('geoip-lite');
