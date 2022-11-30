@@ -3,7 +3,8 @@
 This future platform will bring in all the advanced skilled teens into a single community.
 
 ## Will be deployed on vercel + heroku
-- update: Will be uploaded on Amazon ECS
+- update: production deployment on Amazon ECS
+- update: test deployment on Render
 
 - Node deployed on Heroku
  → https://server42223.herokuapp.com
@@ -14,7 +15,7 @@ This future platform will bring in all the advanced skilled teens into a single 
 - express set up with routing and error controls
 - atlas connected through mongoose
 - redis connected through ioredis [Redis Enterprise]
-- postgres connected through free postgresDB [Heroku]
+- postgres connected through docker postgres container
 - secure cors policy applied
 - backlogger removed due to deployment complicacy of CJS
 - nodemailer removed, sendgrid implemented
@@ -26,6 +27,8 @@ This future platform will bring in all the advanced skilled teens into a single 
 - single image handling added
 - auth handled by postgres container
 - user data handled by mongodb container
+- redis handled session management 
+- secure auth management
 
 
 # Works left
@@ -35,7 +38,6 @@ This future platform will bring in all the advanced skilled teens into a single 
 - NodeJS controlled by PM2
 - Reverse proxy using nginx
 - Container deployment on ECS using Docker Image.
-- Session storage using redis
 - Proper load distribution test, memory distribution test.
 - Minimal and optimized thread control system.
 
@@ -48,3 +50,9 @@ This future platform will bring in all the advanced skilled teens into a single 
 - 404
 - cookie [test] [REMOVED]
 - dashboard
+- login
+- auth
+- forms
+- logout
+- image
+- test
