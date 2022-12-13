@@ -13,21 +13,21 @@ const archivedPost = {...data,test:true,Status:"Post"};
 router
     .route('/')
     .get((req,res)=>{
-        req.session.destroy();
-        res.json({...archivedGet,get:req.body});
+        const sum = {...archivedPost,post:req.body};
+        const connectID = req.cookies.connectID;
+        try{
+            console.log(connectID);
+            const userIDtoken = jwt.verify(connectID,process.env.SECRET);
+            redis.del(userIDtoken);}
+            catch(er){
+                console.log(er);
+            }
+        res.clearCookie('connectId',{ path: '/', secure: true, httpOnly: true });
+        res.clearCookie('rememberme',{ httpOnly: true, secure:true });
+        res.end();
     })
     .post((req,res)=>{
-        const sum = {...archivedPost,post:req.body};
-        const {connectID} = req.cookies;
-        const userIDtoken = jwt.verify(connectID,process.env.SECRET);
-        redis.del(userIDtoken);
-        res.clearCookie('connectID');
-        res.clearCookie('rememberme');
-        req.session.destroy();
-        res.header(sendingHeader);
-        res.cookie('connectId', dataSet, { path: '/', secure: true, httpOnly: true, expires: 0 });
-        res.cookie('rememberme', '1', { expires: 0, httpOnly: true, secure:true })
-        res.end();
+        res.send("unauthorized");
 
     });
         

@@ -87,8 +87,8 @@ router
                         //added nosql query: verification:true
                                 data.save(data)
                                 .then(result => {
-                                    res.header('fullname',name,sendingCookie)
-                                    res.json({message:'success',email:"test@example.com1",route:"/verification",data:{result},route:"/verify",test:result1})
+                                    //res.header('fullname',name,sendingCookie)
+                                    res.json({message:'success',email:email,data:{result},route:"/verify"})
                                 })
                                 .catch(err => res.json({state:"request rejected",message:[netError,err]}))
                             })

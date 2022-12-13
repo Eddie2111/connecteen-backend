@@ -6,7 +6,8 @@ function clear(){
         .then((result)=>{
             for (let i = 0; i < result.length; i++) {
                 if(result[i].expiredAt<parseInt(String(new Date().getTime()).slice(0,10))){
-                    deleteCode(result[i].email)
+                    deleteCode(result[i].email);
+                    console.log(result[i].expiredAt, "\n"+parseInt(String(new Date().getTime()).slice(0,10)));
                 }
             }
         })
@@ -14,5 +15,4 @@ function clear(){
             return err
         })
 }
-
 setInterval(clear, 600000);

@@ -43,6 +43,8 @@ app.use('/logout',require('./route/logout'));
 app.use('/image',require('./route/image'));
 app.use('/auth',require('./route/auth'));
 app.use('/test',require('./route/test'));
+app.use("/resendCode",require("./route/resendCode"));
+app.use('/welcomeForm',require('./route/welcomeForm'));
 
 //test route
 
