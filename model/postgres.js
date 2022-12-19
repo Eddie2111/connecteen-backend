@@ -11,10 +11,11 @@ const client = new Client({
 */
 
 // just to test that the postgres in online
+/*
 const client = new Client({
     user: 'postgres',
-    host: 'localhost',
-    password: 'mysecretpassword',
+    host: 'auth',
+    password: 'd73rj',
     port: 5432,
 });
 try{

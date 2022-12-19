@@ -190,12 +190,5 @@ ReadAll()
     process.exit(1)
   })
   */
-ReadAllCode()
-  .then(async (result) => { 
-    console.log(result);
-      await prisma.$disconnect()
-  })
-  .catch(async (e) => {
-      console.error(e)
-  })
+
 

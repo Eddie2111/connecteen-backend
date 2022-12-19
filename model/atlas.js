@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 //before compose:
     // const url = 'mongodb://mongo:27016/Connecteen';
 // before compose
-const url = 'mongodb://localhost:27016/Connecteen';
+const url = 'mongodb://datadb:27017/Connecteen';
 const connection = mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true })
    .then(() => console.log('NOSQL DB:200'))
    .catch(err => console.error('NOSQL DB:500', err));

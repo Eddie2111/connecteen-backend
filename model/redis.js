@@ -1,7 +1,7 @@
 try{
     const Redis = require('ioredis');    
     const redis = new Redis({
-        host: "localhost",
+        host: "cache",
         port: "6379",
         username: "",
         password: ""

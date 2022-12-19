@@ -34,7 +34,7 @@ services:
     - DATABASE_HOST         = "ec2-34-199-68-114.compute-1.amazonaws.com"
     - TEST                  = "r3r/*-+32ew90f/l;.0-lk76-0-0-.kj0hio,09i/lk';po["
   mongo:
-    container_name: dataDB
+    container_name: datadb
     image: mongo
     ports: 
     - '27017:27017'
@@ -53,7 +53,7 @@ services:
     image: adminer
     restart: always
     ports:
-      - 8080:8080
+      - 5432:5432
 volumes:
  mongodb:
  postgres:
